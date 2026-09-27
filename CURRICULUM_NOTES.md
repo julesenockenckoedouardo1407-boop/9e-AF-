@@ -1,10 +1,6 @@
-# Notes pédagogiques — 9e AF
+SOURCES ET MÉTHODE
+Le MENFP indique sur son site officiel la mise à disposition de modèles d'examen de la 9e AF et de contenus essentiels. L'application distingue donc le socle curriculaire des entraînements d'examen.
 
-La V2 contient une banque d'exercices hors ligne plus riche et une structure disciplinaire couvrant :
-Mathématiques, Français, Créole, Sciences expérimentales, Histoire-Géographie,
-Éducation à la citoyenneté, Anglais, Espagnol, ETAP, Éducation esthétique et artistique et EPS.
+Le programme d'éducation esthétique et artistique du 3e cycle est structuré autour de trois composantes : arts plastiques et visuels ; arts de la scène principalement la musique ; connaissances culturelles et patrimoine haïtien.
 
-Les programmes MENFP du 3e cycle 2024 utilisent une approche par compétences et détaillent les unités d'apprentissage.
-Pour l'éducation artistique, le programme distingue arts plastiques et visuels, arts de la scène principalement la musique,
-et connaissances culturelles/patrimoine haïtien.
-Pour ETAP, le programme général couvre les technologies et activités productives, tandis que l'option ETAP est un enseignement complémentaire.
+Cette V3 contient une première couche de cours rédigés pédagogiquement. Elle doit encore être enrichie matière par matière avant d'être présentée comme une couverture exhaustive de tout le programme.

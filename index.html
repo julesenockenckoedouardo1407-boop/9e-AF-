@@ -1,89 +1,68 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b5d3b">
-  <meta name="description" content="Application éducative hors ligne pour les élèves de 9e AF en Haïti.">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon-192.png">
-  <link rel="stylesheet" href="style.css">
-  <title>9e AF</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b6b4f">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+<title>9e AF</title>
 </head>
 <body>
-<header class="topbar">
-  <div>
-    <div class="eyebrow">ENVIRONNEMENT D’APPRENTISSAGE</div>
-    <h1>🎓 9e AF</h1>
-  </div>
-  <button id="installBtn" class="small-btn" hidden>Installer</button>
+<header>
+  <div class="brand"><div class="logo">9e</div><div><h1>9e AF</h1><p>Apprendre • s'entraîner • progresser</p></div></div>
+  <button id="installBtn" class="small hidden">Installer</button>
 </header>
-
 <main>
-  <section id="home" class="view active">
-    <div class="hero">
-      <h2>Bonjour 👋</h2>
-      <p>Apprends, entraîne-toi et mesure ta progression, même sans connexion.</p>
-    </div>
-    <div class="grid">
-      <button class="tile" data-go="courses">📚<b>Apprendre</b><span>Cours et notions</span></button>
-      <button class="tile" data-go="practice">✏️<b>S'entraîner</b><span>Exercices</span></button>
-      <button class="tile" data-go="review">🧠<b>Révision ciblée</b><span>Mes difficultés</span></button>
-      <button class="tile" data-go="exam">🎯<b>Examen blanc</b><span>Simulation</span></button>
-      <button class="tile" data-go="progress">📊<b>Ma progression</b><span>Suivi local</span></button>
-      <button class="tile" data-go="about">ℹ️<b>À propos</b><span>Application</span></button>
-    </div>
-    <div class="offline"><span class="dot"></span> Mode hors ligne disponible</div>
-  </section>
+<section id="home" class="page active">
+  <div class="hero"><h2>Bienvenue dans ton espace 9e AF</h2><p>Des cours structurés, des exemples, des exercices et des défis, utilisables hors connexion.</p></div>
+  <div id="subjectGrid" class="grid"></div>
+  <div class="quick grid2">
+    <button data-nav="courses">📚 Cours</button><button data-nav="exercises">✏️ Exercices</button>
+    <button data-nav="review">🧠 Révision ciblée</button><button data-nav="exam">🎯 Examen blanc</button>
+    <button data-nav="progress">📊 Ma progression</button><button data-nav="about">ℹ️ À propos</button>
+  </div>
+</section>
 
-  <section id="courses" class="view">
-    <div class="section-head"><button class="back">←</button><h2>📚 Cours</h2></div>
-    <input id="search" class="search" placeholder="🔎 Rechercher une notion...">
-    <div id="subjects" class="subject-list"></div>
-  </section>
+<section id="courses" class="page">
+  <div class="topline"><button data-nav="home">← Accueil</button><h2>Cours</h2></div>
+  <div id="courseFilters" class="chips"></div>
+  <div id="lessonList"></div>
+</section>
 
-  <section id="practice" class="view">
-    <div class="section-head"><button class="back">←</button><h2>✏️ S'entraîner</h2></div>
-    <div id="practiceBox"></div>
-  </section>
+<section id="lesson" class="page">
+  <div class="topline"><button data-nav="courses">← Cours</button><h2 id="lessonTitle">Leçon</h2></div>
+  <article id="lessonBody" class="lesson"></article>
+</section>
 
-  <section id="review" class="view">
-    <div class="section-head"><button class="back">←</button><h2>🧠 Révision ciblée</h2></div>
-    <div id="reviewBox"></div>
-  </section>
+<section id="exercises" class="page">
+  <div class="topline"><button data-nav="home">← Accueil</button><h2>Exercices</h2></div>
+  <div id="exerciseArea"></div>
+</section>
 
-  <section id="exam" class="view">
-    <div class="section-head"><button class="back">←</button><h2>🎯 Examen blanc</h2></div>
-    <div id="examBox"></div>
-  </section>
+<section id="review" class="page">
+  <div class="topline"><button data-nav="home">← Accueil</button><h2>Révision ciblée</h2></div>
+  <p class="muted">Les notions que tu as ratées ou laissées incomplètes apparaissent ici.</p>
+  <div id="reviewArea"></div>
+</section>
 
-  <section id="progress" class="view">
-    <div class="section-head"><button class="back">←</button><h2>📊 Ma progression</h2></div>
-    <div id="progressBox"></div>
-  </section>
+<section id="exam" class="page">
+  <div class="topline"><button data-nav="home">← Accueil</button><h2>Examen blanc</h2></div>
+  <div id="examArea"></div>
+</section>
 
-  <section id="about" class="view">
-    <div class="section-head"><button class="back">←</button><h2>ℹ️ À propos</h2></div>
-    <div class="card about">
-      <div class="logo">9</div>
-      <h3>9e AF</h3>
-      <p>Application éducative hors ligne destinée aux élèves de 9e année fondamentale.</p>
-      <hr>
-      <p><strong>Créé par maître Jules Enock</strong></p>
-      <p>Contact : <a href="tel:+50940409680">+509 40409680</a></p>
-      <p class="muted">Cette version constitue le socle technique initial. Le contenu pédagogique est structuré pour recevoir progressivement les données curriculaires validées.</p>
-    </div>
-  </section>
+<section id="progress" class="page">
+  <div class="topline"><button data-nav="home">← Accueil</button><h2>Ma progression</h2></div>
+  <div id="progressArea"></div>
+</section>
+
+<section id="about" class="page">
+  <div class="topline"><button data-nav="home">← Accueil</button><h2>À propos</h2></div>
+  <div class="card"><h3>9e AF</h3><p>Application pédagogique hors connexion pour accompagner l'élève de 9e année fondamentale.</p><p><b>Créé par maître Jules Enock</b><br>Contact : +509 40409680</p><p class="muted">Les contenus sont organisés à partir des orientations curriculaires du MENFP. Les explications et exercices de l'application sont des adaptations pédagogiques et ne reproduisent pas les documents officiels mot à mot.</p></div>
+</section>
 </main>
-
-<nav class="nav">
-  <button data-go="home">🏠<span>Accueil</span></button>
-  <button data-go="courses">📚<span>Cours</span></button>
-  <button data-go="practice">✏️<span>Exercices</span></button>
-  <button data-go="progress">📊<span>Progression</span></button>
-  <button data-go="about">⚙️<span>À propos</span></button>
+<nav class="bottom">
+<button data-nav="home">🏠<span>Accueil</span></button><button data-nav="courses">📚<span>Cours</span></button><button data-nav="exercises">✏️<span>Exercices</span></button><button data-nav="progress">📊<span>Progression</span></button>
 </nav>
-
-<script src="app.js"></script>
-</body>
-</html>
+<script src="content.js"></script><script src="app.js"></script>
+</body></html>

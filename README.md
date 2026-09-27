@@ -1,16 +1,8 @@
-# 9e AF — application PWA
+9e AF — V3
+Application PWA hors connexion.
 
-Socle technique initial :
-- fichiers essentiels à la racine ;
-- PWA installable ;
-- service worker pour le mode hors ligne ;
-- progression locale avec localStorage ;
-- recherche de notions ;
-- exercices ;
-- révision ciblée ;
-- examen blanc ;
-- À propos.
+Installation : ouvrir index.html via un hébergement HTTPS compatible PWA (par exemple GitHub Pages), puis utiliser le bouton Installer ou « Ajouter à l'écran d'accueil ».
 
-IMPORTANT :
-Le contenu curriculaire détaillé doit être vérifié contre les documents MENFP avant publication comme version pédagogique définitive.
-Aucune année scolaire n'est utilisée dans l'identité de l'application.
+Cette version ajoute une véritable couche de leçons structurées : objectif, explication, exemple, conseils et exercices. Les contenus pédagogiques sont des adaptations et ne reproduisent pas mot à mot les documents MENFP.
+
+Important : aucun millésime scolaire n'est intégré à l'identité de l'application.
