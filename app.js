@@ -4,10 +4,42 @@ let deferredPrompt=null, currentSubject="all", exercisePool=[], exerciseIndex=0,
 function save(){localStorage.setItem("9eAFv3",JSON.stringify(state))}
 function subject(id){return SUBJECTS.find(s=>s.id===id)}
 function go(id){$$(".page").forEach(p=>p.classList.remove("active"));$("#"+id).classList.add("active"); if(id==="courses")renderCourses();if(id==="exercises")startExercises();if(id==="review")renderReview();if(id==="exam")startExam();if(id==="progress")renderProgress()}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-nav]");if(b)go(b.dataset.nav);const sb=e.target.closest("[data-subject]");if(sb){currentSubject=sb.dataset.subject;go("courses")}const lb=e.target.closest("[data-lesson]");if(lb)openLesson(lb.dataset.lesson)});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-nav]");if(b)go(b.dataset.nav);const sb=e.target.closest("[data-subject]");if(sb){currentSubject=sb.dataset.subject;go("courses");return}const lb=e.target.closest("[data-lesson]");if(lb)openLesson(lb.dataset.lesson)});
 function renderHome(){ $("#subjectGrid").innerHTML=SUBJECTS.map(s=>`<button class="subject" data-subject="${s.id}"><span>${s.icon}</span><strong>${s.name}</strong><span>${s.desc}</span></button>`).join("")}
-function renderCourses(){let filtered=currentSubject==="all"?LESSONS:LESSONS.filter(x=>x.subject===currentSubject);$("#courseFilters").innerHTML=`<button class="${currentSubject==="all"?"active":""}" data-subject="all">Toutes</button>`+SUBJECTS.map(s=>`<button class="${currentSubject===s.id?"active":""}" data-subject="${s.id}">${s.icon} ${s.name}</button>`).join("");$("#lessonList").innerHTML=filtered.map((l,i)=>{const idx=LESSONS.indexOf(l),k=state.done[idx];return `<button class="card" style="width:100%;text-align:left" data-lesson="${idx}"><span class="tag">${subject(l.subject).name}</span><span class="tag">${l.unit}</span><h3>${l.title}</h3><p class="muted">${l.objective}</p><b>${k?"✓ Notion travaillée":"→ Ouvrir la leçon"}</b></button>`}).join("")||`<div class="card">Aucune leçon disponible pour ce filtre.</div>`}
-function openLesson(i){const l=LESSONS[i];state.done[i]=true;save();$("#lessonTitle").textContent=l.title;$("#lessonBody").innerHTML=`<span class="tag">${subject(l.subject).name}</span><span class="tag">${l.unit}</span><h3>Objectif</h3><p>${l.objective}</p><h3>À retenir</h3><p>${l.lesson}</p><div class="example"><b>Exemple</b><br>${l.example}</div><h3>Conseils</h3><ul>${l.tips.map(x=>`<li>${x}</li>`).join("")}</ul><h3>Je m'entraîne</h3>${l.exercises.map((x,j)=>`<div class="card"><b>${j+1}. ${x}</b><p class="muted">Réponse attendue : ${l.answers[j]}</p></div>`).join("")}<button data-nav="courses">← Retour aux cours</button>`;go("lesson")}
+function renderCourses(){
+  const filters=$("#courseFilters");
+  const summary=$("#courseSummary");
+  const list=$("#lessonList");
+  if(!filters||!summary||!list)return;
+  filters.innerHTML=`<button class="${currentSubject==="all"?"active":""}" data-subject="all">Toutes les matières</button>`+
+    SUBJECTS.map(s=>`<button class="${currentSubject===s.id?"active":""}" data-subject="${s.id}">${s.icon} ${s.name}</button>`).join("");
+  const filtered=currentSubject==="all"?LESSONS:LESSONS.filter(l=>l.subject===currentSubject);
+  const s=currentSubject==="all"?null:subject(currentSubject);
+  summary.innerHTML=s
+    ? `<h3>${s.icon} ${s.name}</h3><p>${s.desc}</p><p><b>${filtered.length}</b> leçon${filtered.length>1?"s":""} disponible${filtered.length>1?"s":""}.</p>`
+    : `<h3>📚 Toutes les matières</h3><p><b>${LESSONS.length}</b> leçons disponibles dans cette version.</p><p class="muted">Choisis une matière pour afficher directement ses cours.</p>`;
+  list.innerHTML=filtered.length?filtered.map(l=>{
+    const idx=LESSONS.indexOf(l), done=!!state.done[idx];
+    return `<div class="card course-card"><span class="tag">${subject(l.subject).name}</span><span class="tag">${l.unit}</span><h3>${l.title}</h3><p>${l.objective}</p><button data-lesson="${idx}">${done?"✓ Revoir le cours":"📖 Ouvrir le cours"}</button></div>`;
+  }).join(""):`<div class="card error"><h3>Aucun cours trouvé</h3><p>Cette matière n'a pas encore de leçon intégrée.</p></div>`;
+}
+function openLesson(i){
+  const l=LESSONS[Number(i)];
+  if(!l){go("courses");return;}
+  state.done[i]=true; save();
+  $("#lessonTitle").textContent=l.title;
+  $("#lessonBody").innerHTML=
+    `<span class="tag">${subject(l.subject).name}</span><span class="tag">${l.unit}</span>
+     <h3>🎯 Objectif</h3><p>${l.objective}</p>
+     <h3>📖 Cours</h3><p>${l.lesson}</p>
+     <div class="example"><b>💡 Exemple</b><br>${l.example}</div>
+     <h3>🧠 À retenir</h3><ul>${l.tips.map(x=>`<li>${x}</li>`).join("")}</ul>
+     <h3>✏️ Je m'entraîne</h3>
+     ${l.exercises.map((x,j)=>`<div class="card"><b>${j+1}. ${x}</b><details><summary>Voir la correction</summary><p><b>Correction :</b> ${l.answers[j]}</p></details></div>`).join("")}
+     <button id="backCourses">← Retour aux cours</button>`;
+  $("#backCourses").onclick=()=>go("courses");
+  go("lesson");
+}
 function makeQuestions(list){return list.flatMap((l,li)=>l.exercises.map((q,j)=>({text:q,answer:l.answers[j],lesson:li,title:l.title,subject:l.subject})) )}
 function startExercises(){exercisePool=makeQuestions(LESSONS).sort(()=>Math.random()-.5);exerciseIndex=0;renderQuestion("exerciseArea",exercisePool,exerciseIndex,false)}
 function renderQuestion(target,pool,i,isExam){if(i>=pool.length){$(target).innerHTML=`<div class="card success"><h3>Terminé !</h3><p>Score : ${isExam?state.scores.exam:state.scores.ex}/${pool.length}</p><button data-nav="home">Retour à l'accueil</button></div>`;return}const q=pool[i];const opts=[q.answer,...makeDistractors(q.answer)].sort(()=>Math.random()-.5);$(target).innerHTML=`<div class="question"><span class="tag">${subject(q.subject).name}</span><span class="tag">${i+1}/${pool.length}</span><h3>${q.text}</h3><div id="answers">${opts.map(o=>`<button class="answer" data-answer="${encodeURIComponent(o)}">${o}</button>`).join("")}</div><div id="feedback"></div></div>`;$("#answers").addEventListener("click",e=>{const b=e.target.closest(".answer");if(!b)return;const val=decodeURIComponent(b.dataset.answer),ok=val===q.answer;$$(".answer").forEach(x=>x.disabled=true);b.classList.add(ok?"correct":"wrong");$("#feedback").innerHTML=`<div class="result ${ok?"success":"error"}">${ok?"✓ Bonne réponse !":"✗ Pas encore. Réponse : "+q.answer}</div><button id="next">Continuer</button>`;if(ok){if(isExam)state.scores.exam++;else state.scores.ex++;state.done[q.lesson]=true}else state.wrong[q.lesson]=true;save();$("#next").onclick=()=>{i++;renderQuestion(target,pool,i,isExam)}})}
