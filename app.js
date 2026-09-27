@@ -61,9 +61,53 @@ const DATA = [
 
 const QUESTIONS = [
  {subject:"math",q:"Un véhicule parcourt 240 km en 4 heures. Quelle est sa vitesse moyenne ?",a:"60",ex:"vitesse = distance ÷ temps = 240 ÷ 4 = 60 km/h.",topic:"Vitesse"},
- {subject:"math",q:"Quel est le PGCD de 18 et 24 ?",a:"6",ex:"Les diviseurs communs sont 1, 2, 3 et 6. Le plus grand est 6.",topic:"PGCD"},
- {subject:"math",q:"Résous : 3x = 21. Quelle est la valeur de x ?",a:"7",ex:"On divise les deux membres par 3 : x = 21 ÷ 3 = 7.",topic:"Équations"},
- {subject:"civic",q:"Dans une démocratie, quel principe permet aux citoyens de participer à la vie collective ?",a:"participation",ex:"La participation citoyenne permet aux citoyens de prendre part à la vie collective.",topic:"Participation"}
+ {subject:"math",q:"Quel est le PGCD de 18 et 24 ?",a:"6",ex:"Le plus grand diviseur commun de 18 et 24 est 6.",topic:"PGCD"},
+ {subject:"math",q:"Résous : 3x = 21. Quelle est la valeur de x ?",a:"7",ex:"On divise les deux membres par 3 : x = 7.",topic:"Équations"},
+ {subject:"math",q:"Quel est le PPCM de 6 et 8 ?",a:"24",ex:"24 est le plus petit multiple commun positif de 6 et 8.",topic:"PPCM"},
+ {subject:"math",q:"Combien vaut 25 % de 200 ?",a:"50",ex:"25 % = 0,25 ; 0,25 × 200 = 50.",topic:"Pourcentages"},
+ {subject:"math",q:"La moyenne de 8, 10 et 12 est combien ?",a:"10",ex:"(8 + 10 + 12) ÷ 3 = 10.",topic:"Moyenne"},
+ {subject:"math",q:"Si 3 cahiers coûtent 150 gourdes, combien coûtent 6 cahiers au même prix unitaire ?",a:"300",ex:"6 est le double de 3, donc 150 × 2 = 300 gourdes.",topic:"Proportionnalité"},
+ {subject:"math",q:"Quel est le carré de 9 ?",a:"81",ex:"9 × 9 = 81.",topic:"Puissances"},
+ {subject:"math",q:"Si x + 5 = 12, quelle est la valeur de x ?",a:"7",ex:"On soustrait 5 aux deux membres : x = 7.",topic:"Équations"},
+ {subject:"math",q:"Un rectangle mesure 8 cm de longueur et 3 cm de largeur. Quelle est son aire en cm² ?",a:"24",ex:"Aire = longueur × largeur = 8 × 3 = 24 cm².",topic:"Aires"},
+
+ {subject:"fr",q:"Dans un texte, comment appelle-t-on l'idée principale autour de laquelle s'organisent les informations ?",a:"thème",ex:"Le thème est le sujet général traité par le texte.",topic:"Compréhension"},
+ {subject:"fr",q:"Quel type de texte cherche principalement à défendre un point de vue ?",a:"argumentatif",ex:"Le texte argumentatif présente une thèse et des arguments.",topic:"Argumentation"},
+ {subject:"fr",q:"Quel connecteur exprime une opposition : « donc », « mais » ou « parce que » ?",a:"mais",ex:"« Mais » marque une opposition ou un contraste.",topic:"Connecteurs"},
+ {subject:"fr",q:"Comment appelle-t-on un mot qui a un sens proche d'un autre mot ?",a:"synonyme",ex:"Un synonyme a un sens identique ou proche.",topic:"Vocabulaire"},
+
+ {subject:"creole",q:"Ki sa yo rele lide prensipal yon tèks ?",a:"lide prensipal",ex:"Se lide ki pi enpòtan tèks la ap devlope.",topic:"Konpreyansyon"},
+ {subject:"creole",q:"Ki kalite tèks ki chèche defann yon opinyon ak agiman ?",a:"tèks agimantatif",ex:"Tèks agimantatif la sèvi ak agiman pou soutni yon pozisyon.",topic:"Ekspresyon"},
+
+ {subject:"science",q:"Quel appareil permet de mesurer une température ?",a:"thermomètre",ex:"Le thermomètre sert à mesurer la température.",topic:"Physique"},
+ {subject:"science",q:"Dans un circuit électrique simple, quel élément fournit généralement l'énergie électrique ?",a:"pile",ex:"La pile est une source d'énergie électrique dans un circuit simple.",topic:"Électricité"},
+ {subject:"science",q:"Comment appelle-t-on le passage d'un liquide à l'état gazeux ?",a:"vaporisation",ex:"La vaporisation est le passage de l'état liquide à l'état gazeux.",topic:"Chimie"},
+ {subject:"science",q:"Les fossiles permettent notamment d'étudier quoi ?",a:"l'histoire de la vie",ex:"Les fossiles fournissent des informations sur les êtres vivants du passé et l'histoire de la vie.",topic:"Sciences de la Terre"},
+
+ {subject:"histgeo",q:"En quelle année Haïti proclame-t-elle son indépendance ?",a:"1804",ex:"L'indépendance d'Haïti est proclamée le 1er janvier 1804.",topic:"Indépendance"},
+ {subject:"histgeo",q:"Quel outil permet de représenter et localiser des espaces géographiques ?",a:"carte",ex:"La carte représente un espace selon une échelle et une légende.",topic:"Cartographie"},
+ {subject:"histgeo",q:"Comment appelle-t-on l'augmentation de la population vivant dans les villes ?",a:"urbanisation",ex:"L'urbanisation désigne notamment la croissance de la population urbaine et du fait urbain.",topic:"Population"},
+
+ {subject:"civic",q:"Quel mot désigne la participation d'un citoyen à la vie collective ?",a:"participation",ex:"La participation citoyenne est une dimension de la vie collective.",topic:"Participation"},
+ {subject:"civic",q:"Comment appelle-t-on l'ensemble des règles obligatoires qui s'appliquent dans une société ?",a:"loi",ex:"La loi fixe des règles qui organisent la vie collective.",topic:"Loi"},
+ {subject:"civic",q:"Un citoyen possède des droits. Possède-t-il aussi des devoirs ?",a:"oui",ex:"La citoyenneté associe droits, devoirs et responsabilités.",topic:"Droits et devoirs"},
+
+ {subject:"english",q:"Translate: « Bonjour ».",a:"hello",ex:"« Bonjour » se traduit généralement par « hello ».",topic:"Vocabulary"},
+ {subject:"english",q:"Complete: « I ___ a student. »",a:"am",ex:"Avec « I », le verbe « to be » au présent est « am ».",topic:"Grammar"},
+ {subject:"english",q:"What is the comparative of « small » ?",a:"smaller",ex:"Pour beaucoup d'adjectifs courts, on forme le comparatif avec -er.",topic:"Comparatives"},
+
+ {subject:"spanish",q:"Translate « Bonjour » into Spanish.",a:"hola",ex:"« Bonjour » se traduit par « hola » en espagnol.",topic:"Vocabulario"},
+ {subject:"spanish",q:"Complete: « Yo ___ estudiante. »",a:"soy",ex:"Avec « yo », le verbe ser donne « soy ».",topic:"Gramática"},
+
+ {subject:"etap",q:"Dans un projet de petite entreprise, quel élément permet de connaître ce que l'on dépense pour produire ?",a:"coût",ex:"Le coût regroupe les dépenses liées à la production ou à l'activité.",topic:"Entrepreneuriat"},
+ {subject:"etap",q:"Quelle pratique consiste à transformer des déchets pour leur donner une nouvelle utilisation ?",a:"recyclage",ex:"Le recyclage permet de valoriser certains déchets.",topic:"Recyclage"},
+ {subject:"etap",q:"L'énergie provenant du Soleil est appelée énergie… ?",a:"solaire",ex:"L'énergie solaire provient du rayonnement du Soleil.",topic:"Énergie"},
+
+ {subject:"arts",q:"Quels sont les trois volets annoncés dans le programme d'éducation esthétique et artistique du 3e cycle ?",a:"arts plastiques et visuels, arts de la scène principalement la musique, connaissances culturelles et patrimoine haïtien",ex:"Le programme distingue ces trois volets.",topic:"Programme"},
+ {subject:"arts",q:"Quel domaine artistique utilise notamment les sons, le rythme et la voix ?",a:"musique",ex:"La musique travaille notamment les sons, le rythme et la voix.",topic:"Arts de la scène"},
+
+ {subject:"eps",q:"Pourquoi fait-on un échauffement avant une activité physique ?",a:"préparer le corps",ex:"L'échauffement prépare progressivement le corps à l'effort et participe à la sécurité de la pratique.",topic:"Sécurité"},
+ {subject:"eps",q:"Après un effort physique, quelle phase aide le corps à revenir progressivement au calme ?",a:"récupération",ex:"La récupération permet un retour progressif au repos.",topic:"Récupération"}
 ];
 
 let state = JSON.parse(localStorage.getItem("nineAFState") || '{"progress":{},"errors":[]}');
