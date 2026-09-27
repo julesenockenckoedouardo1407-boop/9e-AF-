@@ -1,69 +1,18 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b6b4f">
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css">
-<title>9e AF</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b6b45"><link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css"><title>9e AF</title>
 </head>
 <body>
-<header>
-  <div class="brand"><div class="logo">9e</div><div><h1>9e AF</h1><p>Apprendre • s'entraîner • progresser</p></div></div>
-  <button id="installBtn" class="small hidden">Installer</button>
-</header>
-<main>
-<section id="home" class="page active">
-  <div class="hero"><h2>Bienvenue dans ton espace 9e AF</h2><p>Des cours structurés, des exemples, des exercices et des défis, utilisables hors connexion.</p></div>
-  <div id="subjectGrid" class="grid"></div>
-  <div class="quick grid2">
-    <button data-nav="courses">📚 Cours</button><button data-nav="exercises">✏️ Exercices</button>
-    <button data-nav="review">🧠 Révision ciblée</button><button data-nav="exam">🎯 Examen blanc</button>
-    <button data-nav="progress">📊 Ma progression</button><button data-nav="about">ℹ️ À propos</button>
-  </div>
-</section>
-
-<section id="courses" class="page">
-  <div class="topline"><button data-nav="home">← Accueil</button><h2>Cours</h2></div>
-  <div id="courseFilters" class="chips"></div>
-  <div id="courseSummary" class="card"></div>
-  <div id="lessonList"></div>
-</section>
-
-<section id="lesson" class="page">
-  <div class="topline"><button data-nav="courses">← Cours</button><h2 id="lessonTitle">Leçon</h2></div>
-  <article id="lessonBody" class="lesson"></article>
-</section>
-
-<section id="exercises" class="page">
-  <div class="topline"><button data-nav="home">← Accueil</button><h2>Exercices</h2></div>
-  <div id="exerciseArea"></div>
-</section>
-
-<section id="review" class="page">
-  <div class="topline"><button data-nav="home">← Accueil</button><h2>Révision ciblée</h2></div>
-  <p class="muted">Les notions que tu as ratées ou laissées incomplètes apparaissent ici.</p>
-  <div id="reviewArea"></div>
-</section>
-
-<section id="exam" class="page">
-  <div class="topline"><button data-nav="home">← Accueil</button><h2>Examen blanc</h2></div>
-  <div id="examArea"></div>
-</section>
-
-<section id="progress" class="page">
-  <div class="topline"><button data-nav="home">← Accueil</button><h2>Ma progression</h2></div>
-  <div id="progressArea"></div>
-</section>
-
-<section id="about" class="page">
-  <div class="topline"><button data-nav="home">← Accueil</button><h2>À propos</h2></div>
-  <div class="card"><h3>9e AF</h3><p>Application pédagogique hors connexion pour accompagner l'élève de 9e année fondamentale.</p><p><b>Créé par maître Jules Enock</b><br>Contact : +509 40409680</p><p class="muted">Les contenus sont organisés à partir des orientations curriculaires du MENFP. Les explications et exercices de l'application sont des adaptations pédagogiques et ne reproduisent pas les documents officiels mot à mot.</p></div>
-</section>
-</main>
+<header><div class="brand">9e AF</div><button id="installBtn" class="install hidden">Installer</button></header>
+<main id="app"></main>
 <nav class="bottom">
-<button data-nav="home">🏠<span>Accueil</span></button><button data-nav="courses">📚<span>Cours</span></button><button data-nav="exercises">✏️<span>Exercices</span></button><button data-nav="progress">📊<span>Progression</span></button>
+<button data-nav="home">🏠<span>Accueil</span></button>
+<button data-nav="courses">📚<span>Cours</span></button>
+<button data-nav="exams">🎯<span>Examens</span></button>
+<button data-nav="progress">📊<span>Progrès</span></button>
 </nav>
 <script src="content.js"></script><script src="app.js"></script>
 </body></html>

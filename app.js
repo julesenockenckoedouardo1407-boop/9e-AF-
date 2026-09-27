@@ -1,51 +1,79 @@
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const state=JSON.parse(localStorage.getItem("9eAFv3")||'{"done":{},"wrong":{},"scores":{"ex":0,"exam":0}}');
-let deferredPrompt=null, currentSubject="all", exercisePool=[], exerciseIndex=0, examPool=[], examIndex=0;
-function save(){localStorage.setItem("9eAFv3",JSON.stringify(state))}
-function subject(id){return SUBJECTS.find(s=>s.id===id)}
-function go(id){$$(".page").forEach(p=>p.classList.remove("active"));$("#"+id).classList.add("active"); if(id==="courses")renderCourses();if(id==="exercises")startExercises();if(id==="review")renderReview();if(id==="exam")startExam();if(id==="progress")renderProgress()}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-nav]");if(b)go(b.dataset.nav);const sb=e.target.closest("[data-subject]");if(sb){currentSubject=sb.dataset.subject;go("courses");return}const lb=e.target.closest("[data-lesson]");if(lb)openLesson(lb.dataset.lesson)});
-function renderHome(){ $("#subjectGrid").innerHTML=SUBJECTS.map(s=>`<button class="subject" data-subject="${s.id}"><span>${s.icon}</span><strong>${s.name}</strong><span>${s.desc}</span></button>`).join("")}
-function renderCourses(){
-  const filters=$("#courseFilters");
-  const summary=$("#courseSummary");
-  const list=$("#lessonList");
-  if(!filters||!summary||!list)return;
-  filters.innerHTML=`<button class="${currentSubject==="all"?"active":""}" data-subject="all">Toutes les matières</button>`+
-    SUBJECTS.map(s=>`<button class="${currentSubject===s.id?"active":""}" data-subject="${s.id}">${s.icon} ${s.name}</button>`).join("");
-  const filtered=currentSubject==="all"?LESSONS:LESSONS.filter(l=>l.subject===currentSubject);
-  const s=currentSubject==="all"?null:subject(currentSubject);
-  summary.innerHTML=s
-    ? `<h3>${s.icon} ${s.name}</h3><p>${s.desc}</p><p><b>${filtered.length}</b> leçon${filtered.length>1?"s":""} disponible${filtered.length>1?"s":""}.</p>`
-    : `<h3>📚 Toutes les matières</h3><p><b>${LESSONS.length}</b> leçons disponibles dans cette version.</p><p class="muted">Choisis une matière pour afficher directement ses cours.</p>`;
-  list.innerHTML=filtered.length?filtered.map(l=>{
-    const idx=LESSONS.indexOf(l), done=!!state.done[idx];
-    return `<div class="card course-card"><span class="tag">${subject(l.subject).name}</span><span class="tag">${l.unit}</span><h3>${l.title}</h3><p>${l.objective}</p><button data-lesson="${idx}">${done?"✓ Revoir le cours":"📖 Ouvrir le cours"}</button></div>`;
-  }).join(""):`<div class="card error"><h3>Aucun cours trouvé</h3><p>Cette matière n'a pas encore de leçon intégrée.</p></div>`;
+let state=JSON.parse(localStorage.getItem("9eAFv5")||'{"scores":{},"attempts":{},"mistakes":[]}');
+let currentExam=null,currentAnswers={};let deferredPrompt=null;
+const save=()=>localStorage.setItem("9eAFv5",JSON.stringify(state));
+const app=document.getElementById("app");
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function go(page){render(page);scrollTo(0,0)}
+function render(page="home"){
+ if(page==="home") return home();
+ if(page==="courses") return courses();
+ if(page==="exams") return exams();
+ if(page==="progress") return progress();
+ if(page==="about") return about();
+ if(page==="lesson") return lesson(Number(arguments[1]||0));
 }
-function openLesson(i){
-  const l=LESSONS[Number(i)];
-  if(!l){go("courses");return;}
-  state.done[i]=true; save();
-  $("#lessonTitle").textContent=l.title;
-  $("#lessonBody").innerHTML=
-    `<span class="tag">${subject(l.subject).name}</span><span class="tag">${l.unit}</span>
-     <h3>🎯 Objectif</h3><p>${l.objective}</p>
-     <h3>📖 Cours</h3><p>${l.lesson}</p>
-     <div class="example"><b>💡 Exemple</b><br>${l.example}</div>
-     <h3>🧠 À retenir</h3><ul>${l.tips.map(x=>`<li>${x}</li>`).join("")}</ul>
-     <h3>✏️ Je m'entraîne</h3>
-     ${l.exercises.map((x,j)=>`<div class="card"><b>${j+1}. ${x}</b><details><summary>Voir la correction</summary><p><b>Correction :</b> ${l.answers[j]}</p></details></div>`).join("")}
-     <button id="backCourses">← Retour aux cours</button>`;
-  $("#backCourses").onclick=()=>go("courses");
-  go("lesson");
+function home(){
+ app.innerHTML=`<section class="hero"><h1>Bienvenue en 9e AF</h1><p>Apprendre, s'entraîner, passer des examens complets et suivre ses progrès.</p><button class="btn" data-nav="exams">🎯 Voir les examens</button></section>
+ <h2>Accès rapide</h2><div class="grid">
+ <button data-nav="courses">📚<br>Cours</button><button data-nav="exams">🎯<br>Examens par matière</button>
+ <button data-nav="progress">📊<br>Ma progression</button><button data-nav="about">ℹ️<br>À propos</button></div>
+ <div class="card"><h2>Principe</h2><p>Chaque matière possède des examens structurés par niveaux. Les erreurs peuvent être retrouvées pour organiser la révision.</p></div>`;
 }
-function makeQuestions(list){return list.flatMap((l,li)=>l.exercises.map((q,j)=>({text:q,answer:l.answers[j],lesson:li,title:l.title,subject:l.subject})) )}
-function startExercises(){exercisePool=makeQuestions(LESSONS).sort(()=>Math.random()-.5);exerciseIndex=0;renderQuestion("exerciseArea",exercisePool,exerciseIndex,false)}
-function renderQuestion(target,pool,i,isExam){if(i>=pool.length){$(target).innerHTML=`<div class="card success"><h3>Terminé !</h3><p>Score : ${isExam?state.scores.exam:state.scores.ex}/${pool.length}</p><button data-nav="home">Retour à l'accueil</button></div>`;return}const q=pool[i];const opts=[q.answer,...makeDistractors(q.answer)].sort(()=>Math.random()-.5);$(target).innerHTML=`<div class="question"><span class="tag">${subject(q.subject).name}</span><span class="tag">${i+1}/${pool.length}</span><h3>${q.text}</h3><div id="answers">${opts.map(o=>`<button class="answer" data-answer="${encodeURIComponent(o)}">${o}</button>`).join("")}</div><div id="feedback"></div></div>`;$("#answers").addEventListener("click",e=>{const b=e.target.closest(".answer");if(!b)return;const val=decodeURIComponent(b.dataset.answer),ok=val===q.answer;$$(".answer").forEach(x=>x.disabled=true);b.classList.add(ok?"correct":"wrong");$("#feedback").innerHTML=`<div class="result ${ok?"success":"error"}">${ok?"✓ Bonne réponse !":"✗ Pas encore. Réponse : "+q.answer}</div><button id="next">Continuer</button>`;if(ok){if(isExam)state.scores.exam++;else state.scores.ex++;state.done[q.lesson]=true}else state.wrong[q.lesson]=true;save();$("#next").onclick=()=>{i++;renderQuestion(target,pool,i,isExam)}})}
-function makeDistractors(a){if(/^\d/.test(a)){const n=parseFloat(a);if(!isNaN(n))return[String(n+1),String(n-1),String(n+5)]}return["Aucune de ces réponses","À vérifier","Une autre réponse"]}
-function startExam(){examPool=makeQuestions(LESSONS).sort(()=>Math.random()-.5).slice(0,12);examIndex=0;state.scores.exam=0;save();renderQuestion("examArea",examPool,examIndex,true)}
-function renderReview(){const ids=Object.keys(state.wrong);$("#reviewArea").innerHTML=ids.length?ids.map(i=>{const l=LESSONS[i];return `<button class="card error" style="width:100%;text-align:left" data-lesson="${i}"><h3>${l.title}</h3><p>${l.objective}</p><b>Revoir la notion →</b></button>`}).join(""):`<div class="card success"><h3>Tout va bien pour le moment.</h3><p>Les notions ratées apparaîtront ici après tes exercices.</p></div>`}
-function renderProgress(){const total=LESSONS.length,done=Object.keys(state.done).length,p=Math.round(done/total*100),qs=state.scores.ex;$("#progressArea").innerHTML=`<div class="stat"><h3>Notions travaillées</h3><p><b>${done}</b> / ${total}</p><div class="progressbar"><i style="width:${p}%"></i></div><p>${p}%</p></div><div class="stat"><h3>Exercices réussis</h3><p><b>${qs}</b></p></div><div class="stat"><h3>Conseil</h3><p>Travaille une notion, fais l'exercice, puis reviens sur tes erreurs avant de passer au défi.</p></div>`}
-window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("#installBtn").classList.remove("hidden")});$("#installBtn").onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null}};
-renderHome();renderCourses();
+function courses(){
+ let q=state.q||"";
+ app.innerHTML=`<h1>📚 Cours</h1><input class="search" id="search" placeholder="Rechercher une leçon..." value="${esc(q)}"><div class="subject-filter">${SUBJECTS.map(s=>`<button class="btn secondary" data-filter="${s.id}">${s.name}</button>`).join("")}</div><div id="lessonList"></div>`;
+ renderLessons();
+ document.getElementById("search").oninput=e=>{state.q=e.target.value;renderLessons()}
+}
+function renderLessons(filter=""){
+ let q=(state.q||"").toLowerCase();
+ let arr=LESSONS.filter(x=>(!filter||x.subject===filter)&&(!q||x.title.toLowerCase().includes(q)||x.objective.toLowerCase().includes(q)));
+ document.getElementById("lessonList").innerHTML=arr.map((x)=>{let i=LESSONS.indexOf(x);return `<div class="card"><span class="tag">${SUBJECTS.find(s=>s.id===x.subject)?.name||x.subject}</span><h3>${esc(x.title)}</h3><p>${esc(x.objective)}</p><button class="btn" data-lesson="${i}">📖 Ouvrir le cours</button></div>`}).join("")||"<p class='muted'>Aucun cours trouvé.</p>";
+}
+function lesson(i){
+ let x=LESSONS[i];if(!x)return courses();
+ app.innerHTML=`<button class="btn secondary" data-nav="courses">← Retour aux cours</button><div class="card"><span class="tag">${SUBJECTS.find(s=>s.id===x.subject)?.name||""}</span><h1>${esc(x.title)}</h1><h3>🎯 Objectif</h3><p>${esc(x.objective)}</p><h3>📖 Cours</h3><p>${esc(x.lesson)}</p><h3>💡 Exemple / application</h3><p>${esc(x.lesson)}</p><h3>🧠 À retenir</h3><p>${esc(x.tips)}</p><button class="btn" data-nav="exams">🎯 Passer un examen</button></div>`;
+}
+function exams(){
+ app.innerHTML=`<h1>🎯 Examens complets par matière</h1><div class="card"><p class="muted">Chaque niveau correspond à un sujet structuré. Commence par le Niveau 1.</p></div><div class="grid">${SUBJECTS.map(s=>`<div class="card"><h3>${s.name}</h3><div class="row">${[1,2,3,4].map(n=>`<button class="btn ${n>1?'secondary':''}" data-exam="${s.id}" data-level="${n}">${n===4?'🏆 Défi':'Niveau '+n}</button>`).join("")}</div></div>`).join("")}</div>`;
+}
+function startExam(id,level){
+ if(level!==1){alert("Les niveaux 2 à Défi seront ajoutés avec des sujets supplémentaires. Le Niveau 1 est complet dans cette version.");return}
+ const sections=EXAMS[id]; if(!sections){alert("Sujet en préparation.");return}
+ currentExam={id,level,sections};currentAnswers={};renderExam();
+}
+function renderExam(){
+ const name=SUBJECTS.find(s=>s.id===currentExam.id)?.name||currentExam.id;
+ let n=0,html=`<button class="btn secondary" data-nav="exams">← Liste des examens</button><div class="card"><h1>${name} — Niveau 1</h1><div class="exam-meta"><span class="tag">Sujet complet</span><span class="tag">Auto-correction</span></div><p>Réponds à toutes les parties. Pour les productions écrites, lis les critères avant de valider.</p></div>`;
+ currentExam.sections.forEach((sec,si)=>{html+=`<div class="card"><h2>${esc(sec[0])}</h2>${sec[1]?`<p>${esc(sec[1])}</p>`:""}<div>`;
+ sec[2].forEach((q,qi)=>{const id=`${si}-${qi}`; if(q[2]===null){html+=`<div class="question"><h3>${qi+1}. ${esc(q[0])}</h3><p class="muted">Critères : ${q[1].join(" • ")}</p><textarea id="open-${id}" style="width:100%;min-height:150px;padding:10px;border:1px solid #ccd9d3;border-radius:12px" placeholder="Rédige ta réponse ici..."></textarea></div>`}
+ else {html+=`<div class="question"><h3>${qi+1}. ${esc(q[0])}</h3>${q[1].map((c,oi)=>`<button class="choice" data-answer="${id}" data-opt="${oi}">${esc(c)}</button>`).join("")}</div>`}});html+=`</div></div>`});
+ html+=`<button class="btn" id="finishExam">✅ Terminer et corriger</button>`;
+ app.innerHTML=html;
+}
+function finishExam(){
+ let total=0,score=0;const name=currentExam.id;let open=0;
+ currentExam.sections.forEach((sec,si)=>sec[2].forEach((q,qi)=>{
+   if(q[2]===null){open++;return}
+   total++;let a=currentAnswers[`${si}-${qi}`];if(a===q[2])score++;else if(a!==undefined)state.mistakes.push({subject:name,question:q[0],date:new Date().toISOString()});
+ }));
+ state.scores[`${name}-1`]={score,total,open,date:new Date().toISOString()};
+ state.attempts[name]=(state.attempts[name]||0)+1;save();
+ app.innerHTML=`<div class="card"><div class="result">Résultat : ${score}/${total}</div><p>${Math.round(score/total*100)}% des questions auto-corrigées réussies.</p><div class="bar"><i style="width:${Math.round(score/total*100)}%"></i></div><p class="muted">${open?`La production écrite reste à évaluer selon les critères affichés.`:"Toutes les questions sont auto-corrigées."}</p><button class="btn" data-nav="progress">📊 Voir ma progression</button> <button class="btn secondary" data-nav="exams">🎯 Autres examens</button></div>`;
+}
+function progress(){
+ let rows=Object.entries(state.scores);app.innerHTML=`<h1>📊 Ma progression</h1><div class="card"><h2>Examens réalisés</h2>${rows.length?rows.map(([k,v])=>`<p><b>${esc(k)}</b> : ${v.score}/${v.total} (${Math.round(v.score/v.total*100)}%)</p>`).join(""):"<p class='muted'>Aucun examen terminé.</p>"}</div><div class="card"><h2>Erreurs à revoir</h2><p>${state.mistakes.length} erreur(s) enregistrée(s).</p>${state.mistakes.slice(-8).reverse().map(m=>`<div class="answer"><b>${esc(m.subject)}</b> — ${esc(m.question)}</div>`).join("")}</div>`}
+function about(){app.innerHTML=`<div class="card"><h1>ℹ️ À propos</h1><p><b>9e AF</b> — application d'apprentissage et d'entraînement.</p><p>Contenu structuré à partir des orientations du programme du 3e cycle, avec adaptation pédagogique pour l'apprentissage hors ligne.</p><hr><p><b>Créé par maître Jules Enock</b></p><p>Contact : <b>+509 40409680</b></p></div>`}
+document.addEventListener("click",e=>{
+ const nav=e.target.closest("[data-nav]");if(nav){go(nav.dataset.nav);return}
+ const l=e.target.closest("[data-lesson]");if(l){go("lesson",Number(l.dataset.lesson));return}
+ const f=e.target.closest("[data-filter]");if(f){renderLessons(f.dataset.filter);return}
+ const ex=e.target.closest("[data-exam]");if(ex){startExam(ex.dataset.exam,Number(ex.dataset.level));return}
+ const ans=e.target.closest("[data-answer]");if(ans){const id=ans.dataset.answer;currentAnswers[id]=Number(ans.dataset.opt);document.querySelectorAll(`[data-answer="${id}"]`).forEach(b=>b.classList.remove("correct","wrong"));ans.classList.add("correct");return}
+ if(e.target.id==="finishExam")finishExam();
+});
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;document.getElementById("installBtn").classList.remove("hidden")});
+document.getElementById("installBtn").onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null}};
+render("home");
+
+if("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));

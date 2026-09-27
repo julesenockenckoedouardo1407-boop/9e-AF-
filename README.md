@@ -1,8 +1,10 @@
-9e AF — V4
-Application PWA hors connexion.
-
-Installation : ouvrir index.html via un hébergement HTTPS compatible PWA (par exemple GitHub Pages), puis utiliser le bouton Installer ou « Ajouter à l'écran d'accueil ».
-
-Cette version corrige l'accès aux cours et ajoute une véritable couche de leçons structurées : objectif, explication, exemple, conseils et exercices. Les contenus pédagogiques sont des adaptations et ne reproduisent pas mot à mot les documents MENFP.
-
-Important : aucun millésime scolaire n'est intégré à l'identité de l'application.
+9e AF — V5
+- PWA hors ligne, fichiers à la racine.
+- Cours structurés.
+- Examens organisés par matière.
+- Niveau 1 complet pour chaque matière disponible dans cette version.
+- Corrections automatiques pour les QCM.
+- Production écrite avec critères d'évaluation.
+- Progression et erreurs stockées localement.
+- À propos : Créé par maître Jules Enock / +509 40409680.
+Important : héberger sur HTTPS (ex. GitHub Pages) pour l'installation PWA.
